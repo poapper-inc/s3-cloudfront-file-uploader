@@ -1,5 +1,7 @@
 # s3-cloudfront-file-uploader
 
+![Badge](https://github.com/poapper-inc/s3-cloudfront-file-uploader/actions/workflows/node.yml/badge.svg)
+
 ## Description
 
 File uploader using AWS S3 and AWS CloudFront.
