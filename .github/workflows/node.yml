@@ -15,6 +15,12 @@ jobs:
       matrix:
         node-version: [12.x, 14.x, 16.x]
         os: [ubuntu-latest, windows-latest, macos-latest]
+    env: 
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      REGION: ap-northeast-2
+      BUCKET_NAME: s3-cloudfront-file-uploader
+      CF_DIST_URL: ${{ secrets.CF_DIST_URL }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
