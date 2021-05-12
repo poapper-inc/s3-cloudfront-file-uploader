@@ -46,7 +46,7 @@ export class FilesController {
     this.logger.log(`${file.originalname} uploaded to ${uploadedUrl}`)
 
     return {
-      key: result.key,
+      filename: result.key,
       url: uploadedUrl,
       size: result.size,
       type: result.type,
@@ -68,7 +68,7 @@ export class FilesController {
     }
 
     return results.map(result => ({
-      key: result.key,
+      filename: result.key,
       url: this.getUrl(result.key),
       size: result.size,
       lastModified: result.lastModified,
