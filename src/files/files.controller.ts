@@ -1,8 +1,10 @@
 import {
   BadRequestException,
   Controller,
+  Delete,
   Get,
   Logger,
+  Param,
   Post,
   UploadedFile,
   UseInterceptors,
@@ -73,5 +75,18 @@ export class FilesController {
       size: result.size,
       lastModified: result.lastModified,
     }))
+  }
+
+  /**
+   * Deletes a file.
+   */
+  @Delete(":file")
+  async deleteFile(@Param("file") file: string) {
+    try {
+      this.filesService.deleteFile(file)
+    } catch (err) {
+      this.logger.error(err)
+      throw new BadRequestException(err.name)
+    }
   }
 }
