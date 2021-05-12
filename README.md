@@ -94,7 +94,50 @@ Status: 201 Created
 
 ```json
 {
-  "filename": "uqGWBGj5noE1icvEz35x0Vq3sAw=.md",
-  "url": "https://example.cloudfront.net/uqGWBGj5noE1icvEz35x0Vq3sAw=.md"
+  "filename": "uqGWBGj5noE1icvEz35x0Vq3sAw=.txt",
+  "url": "https://xxxxxxxxxxx.cloudfront.net/uqGWBGj5noE1icvEz35x0Vq3sAw=.txt",
+  "size": 1030,
+  "type": "text/plain"
 }
+```
+
+### Get all files
+
+Gets a list of all files.
+
+```
+GET /files
+```
+
+#### Parameters
+
+None are necessary.
+
+#### Code Sample
+
+```
+curl -X GET http://localhost:3000/files
+```
+
+#### Response
+
+```
+Status: 200 OK
+```
+
+```json
+[
+  {
+    "filename": "1APuurjAXq_YO8DDaEG7Ej0AT7c=.txt",
+    "url": "https://xxxxxxxxxxx.cloudfront.net/1APuurjAXq_YO8DDaEG7Ej0AT7c=.txt",
+    "size": 24324,
+    "lastModified": "2021-05-12T08:10:10.000Z"
+  },
+  {
+    "filename": "uqGWBGj5noE1icvEz35x0Vq3sAw=.md",
+    "url": "https://xxxxxxxxxxx.cloudfront.net/uqGWBGj5noE1icvEz35x0Vq3sAw=.md",
+    "size": 740,
+    "lastModified": "2021-05-07T13:42:46.000Z"
+  }
+]
 ```
