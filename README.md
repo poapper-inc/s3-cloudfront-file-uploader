@@ -141,3 +141,27 @@ Status: 200 OK
   }
 ]
 ```
+
+### Delete a file
+
+Deletes a file specified by filename.
+
+```
+DELETE /files/:filename
+```
+
+#### Parameters
+
+None are necessary.
+
+#### Code Sample
+
+```
+curl -X DELETE http://localhost:3000/files/uqGWBGj5noE1icvEz35x0Vq3sAw=.txt
+```
+
+#### Response
+
+```
+Status: 200 OK
+```

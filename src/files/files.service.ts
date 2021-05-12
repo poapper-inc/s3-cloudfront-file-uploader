@@ -1,4 +1,5 @@
 import {
+  DeleteObjectCommand,
   ListObjectsV2Command,
   ListObjectsV2CommandOutput,
   PutObjectCommand,
@@ -82,5 +83,18 @@ export class FilesService {
         lastModified: content.LastModified,
       }))
     })
+  }
+
+  /**
+   * Deletes a file.
+   * @param key Key (filename) to be deleted
+   */
+  async deleteFile(key: string) {
+    await this.s3.send(
+      new DeleteObjectCommand({
+        Bucket: this.bucket,
+        Key: key,
+      })
+    )
   }
 }
