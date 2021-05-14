@@ -25,13 +25,13 @@ The relevant AWS information must be set in `.env`. See [Configuration](#configu
 
 All configuration is done via `.env` (or system environment variables). The following configuration options must be provided:
 
-| Key                   | Description                 |
-| --------------------- | --------------------------- |
-| AWS_ACCESS_KEY_ID     | AWS access key ID           |
-| AWS_SECRET_ACCESS_KEY | AWS secret access key       |
-| REGION                | AWS region                  |
-| BUCKET_NAME           | S3 bucket name              |
-| CF_DIST_URL           | CloudFront distribution URL |
+| Key                   | Description                |
+| --------------------- | -------------------------- |
+| AWS_ACCESS_KEY_ID     | AWS access key ID          |
+| AWS_SECRET_ACCESS_KEY | AWS secret access key      |
+| REGION                | AWS region                 |
+| BUCKET_NAME           | S3 bucket name             |
+| CF_DIST_ID            | CloudFront distribution ID |
 
 An example is at [`.env.example`](/.env.example).
 
@@ -66,7 +66,7 @@ $ npm run test:cov
 ### Upload a file
 
 Uploads a single file.
-The returned file name is a hash of the uploaded file contents.
+The returned file name is a randomly generated UUIDv4.
 
 ```
 POST /files
@@ -94,8 +94,8 @@ Status: 201 Created
 
 ```json
 {
-  "filename": "uqGWBGj5noE1icvEz35x0Vq3sAw=.txt",
-  "url": "https://xxxxxxxxxxx.cloudfront.net/uqGWBGj5noE1icvEz35x0Vq3sAw=.txt",
+  "filename": "790d9137-e607-4192-8443-9595bcb4f4c8.txt",
+  "url": "https://xxxxxxxxxxx.cloudfront.net/790d9137-e607-4192-8443-9595bcb4f4c8.txt",
   "size": 740,
   "type": "text/plain"
 }
@@ -128,17 +128,12 @@ Status: 200 OK
 ```json
 [
   {
-    "filename": "1APuurjAXq_YO8DDaEG7Ej0AT7c=.txt",
-    "url": "https://xxxxxxxxxxx.cloudfront.net/1APuurjAXq_YO8DDaEG7Ej0AT7c=.txt",
-    "size": 24324,
+    "filename": "790d9137-e607-4192-8443-9595bcb4f4c8.txt",
+    "url": "https://xxxxxxxxxxx.cloudfront.net/790d9137-e607-4192-8443-9595bcb4f4c8.txt",
+    "size": 740,
     "lastModified": "2021-05-12T08:10:10.000Z"
   },
-  {
-    "filename": "uqGWBGj5noE1icvEz35x0Vq3sAw=.md",
-    "url": "https://xxxxxxxxxxx.cloudfront.net/uqGWBGj5noE1icvEz35x0Vq3sAw=.txt",
-    "size": 740,
-    "lastModified": "2021-05-07T13:42:46.000Z"
-  }
+  ...
 ]
 ```
 
@@ -157,11 +152,51 @@ None are necessary.
 #### Code Sample
 
 ```
-curl -X DELETE http://localhost:3000/files/uqGWBGj5noE1icvEz35x0Vq3sAw=.txt
+curl -X DELETE http://localhost:3000/files/790d9137-e607-4192-8443-9595bcb4f4c8.txt
 ```
 
 #### Response
 
 ```
 Status: 200 OK
+```
+
+### Update a file
+
+Update a file, replacing its contents.
+
+**Note**: It is up to the user to manage the file extension correctly when updating files.
+A mismatch between `ContentType` and the file extension may occur otherwise.
+
+```
+PATCH /files/:filename
+```
+
+#### Parameters
+
+| Name   | Parameter Type | Data Type | Description                      |
+| ------ | -------------- | --------- | -------------------------------- |
+| `file` | form-data      | file      | File to update the existing one. |
+
+#### Code Sample
+
+```
+curl -X PATCH http://localhost:3000/files/790d9137-e607-4192-8443-9595bcb4f4c8.txt \
+  -H "Content-Type: multipart/form-data" \
+  -F "file=@example.txt"
+```
+
+#### Response
+
+```
+Status: 200 OK
+```
+
+```json
+{
+  "filename": "790d9137-e607-4192-8443-9595bcb4f4c8.txt",
+  "url": "https://xxxxxxxxxxx.cloudfront.net/790d9137-e607-4192-8443-9595bcb4f4c8.txt",
+  "size": 1029,
+  "type": "text/plain"
+}
 ```
