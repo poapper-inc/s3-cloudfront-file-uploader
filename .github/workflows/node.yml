@@ -20,7 +20,7 @@ jobs:
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       REGION: ap-northeast-2
       BUCKET_NAME: s3-cloudfront-file-uploader
-      CF_DIST_URL: ${{ secrets.CF_DIST_URL }}
+      CF_DIST_ID: ${{ secrets.CF_DIST_ID }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
