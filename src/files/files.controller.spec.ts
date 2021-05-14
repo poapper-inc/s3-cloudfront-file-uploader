@@ -1,3 +1,4 @@
+import { CacheModule } from "@nestjs/common"
 import { ConfigModule, ConfigService } from "@nestjs/config"
 import { Test, TestingModule } from "@nestjs/testing"
 import { FilesController } from "./files.controller"
@@ -8,7 +9,7 @@ describe("FilesController", () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [ConfigModule.forRoot()],
+      imports: [ConfigModule.forRoot(), CacheModule.register({ ttl: 0 })],
       providers: [FilesService, ConfigService],
       controllers: [FilesController],
     }).compile()
