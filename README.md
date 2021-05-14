@@ -96,7 +96,7 @@ Status: 201 Created
 {
   "filename": "uqGWBGj5noE1icvEz35x0Vq3sAw=.txt",
   "url": "https://xxxxxxxxxxx.cloudfront.net/uqGWBGj5noE1icvEz35x0Vq3sAw=.txt",
-  "size": 1030,
+  "size": 740,
   "type": "text/plain"
 }
 ```
@@ -135,7 +135,7 @@ Status: 200 OK
   },
   {
     "filename": "uqGWBGj5noE1icvEz35x0Vq3sAw=.md",
-    "url": "https://xxxxxxxxxxx.cloudfront.net/uqGWBGj5noE1icvEz35x0Vq3sAw=.md",
+    "url": "https://xxxxxxxxxxx.cloudfront.net/uqGWBGj5noE1icvEz35x0Vq3sAw=.txt",
     "size": 740,
     "lastModified": "2021-05-07T13:42:46.000Z"
   }
