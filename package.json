@@ -1,6 +1,6 @@
 {
   "name": "s3-cloudfront-file-uploader",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "File uploader using AWS S3 and AWS CloudFront",
   "author": "Lucas Yunkyu Lee <me@luc.li>",
   "private": true,
