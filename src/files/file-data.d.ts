@@ -3,7 +3,7 @@
  */
 export interface fileData {
   filename: string
-  url: string
+  url: string | Promise<string>
   size: number
   lastModified?: Date
   type?: string

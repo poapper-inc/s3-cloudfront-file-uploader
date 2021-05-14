@@ -1,31 +1,35 @@
 import {
   BadRequestException,
+  CACHE_MANAGER,
   Controller,
   Delete,
   Get,
+  Inject,
   Logger,
   Param,
+  Patch,
   Post,
   UploadedFile,
   UseInterceptors,
 } from "@nestjs/common"
-import { ConfigService } from "@nestjs/config"
 import { FileInterceptor } from "@nestjs/platform-express"
 import { fileData } from "./file-data"
 import { FilesService } from "./files.service"
 import { S3FileDataDto } from "./s3-file-data.dto"
+import { Cache } from "cache-manager"
 
 @Controller("files")
 export class FilesController {
   constructor(
     private filesService: FilesService,
-    private configService: ConfigService
+    @Inject(CACHE_MANAGER) private cacheManager: Cache // NestJS's cache is used to get the CloudFront Distribution URL
   ) {}
 
   private logger = new Logger(FilesController.name)
-  private readonly cfDistUrl = this.configService.get("CF_DIST_URL")
-
-  private getUrl = (key: string) => new URL(key, this.cfDistUrl).href
+  private getCfDistUrl = async () =>
+    `https://${await this.cacheManager.get<string>("CF_DIST_URL")}`
+  private getUrl = async (key: string) =>
+    new URL(key, await this.getCfDistUrl()).href
 
   /**
    * Uploads a single file.
@@ -41,10 +45,10 @@ export class FilesController {
       result = await this.filesService.uploadFile(file)
     } catch (err) {
       this.logger.error(err)
-      throw new BadRequestException(err.name)
+      throw new BadRequestException(err.name, err.message)
     }
 
-    const uploadedUrl = this.getUrl(result.key)
+    const uploadedUrl = await this.getUrl(result.key)
     this.logger.log(`${file.originalname} uploaded to ${uploadedUrl}`)
 
     return {
@@ -66,27 +70,55 @@ export class FilesController {
       results = await this.filesService.getFiles()
     } catch (err) {
       this.logger.error(err)
-      throw new BadRequestException(err.name)
+      throw new BadRequestException(err.name, err.message)
     }
 
-    return results.map(result => ({
-      filename: result.key,
-      url: this.getUrl(result.key),
-      size: result.size,
-      lastModified: result.lastModified,
-    }))
+    return Promise.all(
+      results.map(async result => ({
+        filename: result.key,
+        url: await this.getUrl(result.key),
+        size: result.size,
+        lastModified: result.lastModified,
+      }))
+    )
   }
 
   /**
    * Deletes a file.
    */
   @Delete(":file")
-  async deleteFile(@Param("file") file: string) {
+  async deleteFile(@Param("file") filename: string) {
     try {
-      this.filesService.deleteFile(file)
+      this.filesService.deleteFile(filename)
     } catch (err) {
       this.logger.error(err)
-      throw new BadRequestException(err.name)
+      throw new BadRequestException(err.name, err.message)
+    }
+  }
+
+  /**
+   * Updates a file.
+   */
+  @Patch(":file") // PATCH is used as PUT would semantically mean custom filename uploads
+  @UseInterceptors(FileInterceptor("file"))
+  async updateFile(
+    @UploadedFile() file: Express.Multer.File,
+    @Param("file") filename: string
+  ): Promise<fileData> {
+    let result: S3FileDataDto
+
+    try {
+      result = await this.filesService.updateFile(filename, file)
+    } catch (err) {
+      this.logger.error(err)
+      throw new BadRequestException(err.name, err.message)
+    }
+
+    return {
+      filename: result.key,
+      url: await this.getUrl(result.key),
+      size: result.size,
+      type: result.type,
     }
   }
 }
